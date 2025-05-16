@@ -23,8 +23,19 @@ var lightIntensity = 0.4;
 var lightIntensitySlider;
 var lightIntensitySpan;
 
+// Add new ambient light variables
+var ambientIntensity = 0.1; // Default ambient intensity
+var ambientIntensitySlider;
+var ambientIntensitySpan;
+
+// Add new light map variables
+var lightMapIntensity = 0.5; // Default light map intensity
+var lightMapIntensitySlider;
+var lightMapIntensitySpan;
+
 var images = {
     img: [
+        "pot.png",
         "bird.jpg",
         "coke.jpg",
         "tunnel.jpg",
@@ -37,7 +48,9 @@ var images = {
         'human.jpg'
     ],
     texRoot: './images/texture/',
-    depthRoot: './images/depth/'
+    depthRoot: './images/depth/',
+    normalRoot: './images/normal/', // Add normal map root
+    lightMapRoot: './images/lighting/' // Add light map root
 };
 
 var imgIdx = 8;
@@ -50,21 +63,20 @@ window.onload = function() {
     if (location.search.substr(1) == "") {
         imgIdx = 0;
     } else {
-        imgIdx = parseInt(location.search.substr(1))
+        imgIdx = parseInt(location.search.substr(1));
     }
     Promise.all([
         load.img(images.depthRoot + images.img[imgIdx], "src-depth-img"),
         load.img(images.texRoot + images.img[imgIdx], "src-tex-img"),
+        load.img(images.normalRoot + images.img[imgIdx], "src-normal-img"), // Load normal map
+        load.img(images.lightMapRoot + images.img[imgIdx], "src-lightmap-img") // Load light map
     ]).then(() => {
 
         if (!init()) {
             return;
         }
         setTimeout(startProcessing, 100);
-    })
-
-    //document.getElementById('src-depth-img').src = images.depthRoot + images.img[imgIdx];
-    //document.getElementById('src-tex-img').src = images.texRoot + images.img[imgIdx];
+    });
 
 };
 
@@ -100,6 +112,24 @@ function startProcessing() {
     lightIntensitySlider.value = 40;
     lightIntensitySlider.addEventListener('input', sliderUpdate);
 
+    // Setup ambient intensity slider
+    ambientIntensitySlider = document.getElementById('ambientIntensitySlider');
+    ambientIntensitySpan = document.getElementById('ambient-intensity-span');
+
+    if (ambientIntensitySlider && ambientIntensitySpan) {
+        ambientIntensitySlider.value = ambientIntensity * 100; // Assuming slider 0-100 maps to 0.0-1.0
+        ambientIntensitySlider.addEventListener('input', sliderUpdate);
+    }
+
+    // Setup light map intensity slider
+    lightMapIntensitySlider = document.getElementById('lightMapIntensitySlider');
+    lightMapIntensitySpan = document.getElementById('lightmap-intensity-span');
+
+    if (lightMapIntensitySlider && lightMapIntensitySpan) {
+        lightMapIntensitySlider.value = lightMapIntensity * 100; // Assuming slider 0-100 maps to 0.0-1.0
+        lightMapIntensitySlider.addEventListener('input', sliderUpdate);
+    }
+
     canvas.addEventListener('click', function(event) {
         updateLightFromCanvas(event);
     });
@@ -117,28 +147,33 @@ function startProcessing() {
         if (canvasDrag) {
             updateLightFromCanvas(event);
         }
-    })
+    });
 
-    canvas.addEventListener('mouseenter', () => {mouseInCanvas = true})
-    canvas.addEventListener('mouseout', () => {mouseInCanvas = false})
+    canvas.addEventListener('mouseenter', () => { mouseInCanvas = true; });
+    canvas.addEventListener('mouseout', () => { mouseInCanvas = false; });
 
     window.addEventListener('wheel', function(event) {
         if (mouseInCanvas) {
-            event.preventDefault()
-            var delta = event.deltaY / 80
-            this.console.log(delta)
-            this.console.log(zlightSlider.value)
-            delta = Number(zlightSlider.value) - delta
-            Math.abs(delta)>100 ? delta>0 ? delta=100 : delta=-100 : delta = delta
-            zlightSlider.value = delta
-            this.console.log(zlightSlider.value)
+            event.preventDefault();
+            var delta = event.deltaY / 80;
+            delta = Number(zlightSlider.value) - delta;
+            Math.abs(delta) > 100 ? delta > 0 ? delta = 100 : delta = -100 : delta = delta;
+            zlightSlider.value = delta;
             sliderUpdate();
         }
-    })
+    });
 
-    document.getElementById('loader-overlay-div').setAttribute('style', 'display: none; visibility: hidden;')
+    document.getElementById('loader-overlay-div').setAttribute('style', 'display: none; visibility: hidden;');
     lightPosSpan.innerHTML = '[' + lightPos[0].toFixed(2) + ', ' + lightPos[1].toFixed(2) + ', ' + lightPos[2].toFixed(2) + ']';
     lightIntensitySpan.innerHTML = lightIntensity;
+    // Update ambient intensity span
+    if (ambientIntensitySpan) {
+        ambientIntensitySpan.innerHTML = ambientIntensity.toFixed(2);
+    }
+    // Update light map intensity span
+    if (lightMapIntensitySpan) {
+        lightMapIntensitySpan.innerHTML = lightMapIntensity.toFixed(2);
+    }
     draw();
 
     setupImageSelector();
@@ -146,11 +181,9 @@ function startProcessing() {
 
 function updateLightFromCanvas(event) {
     if (event) {
-        var rect = canvas.getBoundingClientRect()
-        var x = event.offsetX
-        var y = event.offsetY
-        //console.log(event.pageX, event.pageY)
-        //console.log(event.offsetX, event.offsetY)
+        var rect = canvas.getBoundingClientRect();
+        var x = event.offsetX;
+        var y = event.offsetY;
         x = (2 * x / canvas.width) - 1;
         y = -((2 * y / canvas.height) - 1);
         
@@ -166,6 +199,19 @@ function sliderUpdate() {
     
     lightIntensity = lightIntensitySlider.value / 100;
     lightIntensitySpan.innerHTML = lightIntensity;
+
+    // Update ambient intensity from slider
+    if (ambientIntensitySlider && ambientIntensitySpan) {
+        ambientIntensity = ambientIntensitySlider.value / 100;
+        ambientIntensitySpan.innerHTML = ambientIntensity.toFixed(2);
+    }
+    
+    // Update light map intensity from slider
+    if (lightMapIntensitySlider && lightMapIntensitySpan) {
+        lightMapIntensity = lightMapIntensitySlider.value / 100;
+        lightMapIntensitySpan.innerHTML = lightMapIntensity.toFixed(2);
+    }
+
     draw();
 }
 
@@ -181,8 +227,6 @@ function checkboxUpdate() {
 
     draw();
 }
-
-
 
 function init() {
     canvas = document.getElementById('canvas');
@@ -201,15 +245,12 @@ function init() {
 
 function setCanvasSize() {
     var imgSize = ImgHelper.getImageSize();
-    var ratio = 1
+    var ratio = 0.25;
     if (window.innerWidth * ratio < imgSize[0] || window.innerHeight * ratio < imgSize[1]) {
         canvas.width = window.innerWidth * ratio;
         canvas.height = window.innerHeight * ratio;
 
         var aspectRatio = ImgHelper.getAspectRatio();
-        console.log(aspectRatio);
-
-
         var m_width = window.innerWidth * ratio;
         var m_height = m_width / aspectRatio;
 
@@ -230,7 +271,7 @@ function setCanvasSize() {
 
 function setupShaders() {
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, vs_src)
+    gl.shaderSource(vertexShader, vs_src);
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
         alert("Compile Error : Vertex Shader\n" +
@@ -289,18 +330,39 @@ function setupShaderAttributes() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
+    // Add normal map texture setup
+    imgBuffer.normalTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, imgBuffer.normalTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('src-normal-img'));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    // End of normal map texture setup
+
+    // Add light map texture setup
+    imgBuffer.lightMapTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, imgBuffer.lightMapTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('src-lightmap-img'));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    // End of light map texture setup
+
     shaderProgram.imgSizeUnif = gl.getUniformLocation(shaderProgram, 'imgSize');
     shaderProgram.minMaxZUnif = gl.getUniformLocation(shaderProgram, 'minMaxZ');
     shaderProgram.lightPos = gl.getUniformLocation(shaderProgram, 'lightPos');
     shaderProgram.texSampler = gl.getUniformLocation(shaderProgram, 'texSampler');
+    shaderProgram.normalSampler = gl.getUniformLocation(shaderProgram, 'normalSampler'); // Get normalSampler location
+    shaderProgram.lightMapSampler = gl.getUniformLocation(shaderProgram, 'lightMapSampler'); // Get lightMapSampler location
     shaderProgram.textureLighting = gl.getUniformLocation(shaderProgram, 'textureLighting');
     shaderProgram.lightIntensity = gl.getUniformLocation(shaderProgram, 'lightIntensity');
+    shaderProgram.ambientIntensity = gl.getUniformLocation(shaderProgram, 'ambientIntensity'); // New uniform location
+    shaderProgram.lightMapIntensity = gl.getUniformLocation(shaderProgram, 'lightMapIntensity'); // New uniform location
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 }
 
 function draw() {
-    //canvas.width = canvas.parentElement.width
     gl.clearColor(0, 0, 0, 1);
     gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -316,15 +378,30 @@ function draw() {
     gl.bindTexture(gl.TEXTURE_2D, imgBuffer.texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('src-tex-img'));
 
+    // Bind normal map texture
+    gl.activeTexture(gl.TEXTURE1); // Activate texture unit 1
+    gl.bindTexture(gl.TEXTURE_2D, imgBuffer.normalTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('src-normal-img'));
+    // End of normal map texture binding
+
+    // Bind light map texture
+    gl.activeTexture(gl.TEXTURE2); // Activate texture unit 2
+    gl.bindTexture(gl.TEXTURE_2D, imgBuffer.lightMapTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('src-lightmap-img'));
+    // End of light map texture binding
+
     gl.uniform2fv(shaderProgram.imgSizeUnif, new Float32Array(ImgHelper.getImageSize()));
     gl.uniform2fv(shaderProgram.minMaxZUnif, new Float32Array([ImgHelper.minZ, ImgHelper.maxZ]));
     gl.uniform3fv(shaderProgram.lightPos, new Float32Array(lightPos));
-    gl.uniform1i(shaderProgram.texSampler, 0);
+    gl.uniform1i(shaderProgram.texSampler, 0); // Diffuse texture on unit 0
+    gl.uniform1i(shaderProgram.normalSampler, 1); // Normal map texture on unit 1
+    gl.uniform1i(shaderProgram.lightMapSampler, 2); // Light map texture on unit 2
     gl.uniform1i(shaderProgram.textureLighting, textureLighting);
     gl.uniform1f(shaderProgram.lightIntensity, lightIntensity);
+    gl.uniform1f(shaderProgram.ambientIntensity, ambientIntensity); // Set new uniform
+    gl.uniform1f(shaderProgram.lightMapIntensity, lightMapIntensity); // Set new uniform
 
     gl.drawArrays(gl.TRIANGLES, 0, imgBuffer.positionBuffer.numItems);
-   
 }
 
 function setupImageSelector() {
@@ -348,5 +425,5 @@ function setupImageSelector() {
         var selectedOption = selector.options[selectedIdx];
 
         window.location.href = window.location.href.split('?')[0] + '?' + selectedOption.value;
-    })
+    });
 }

@@ -37,7 +37,7 @@
         <div class="container">
             <br>
             <div class="row">
-                <h6>This project aims to add light to an image, provided the image's depthmap. For details, check Github README.</p>
+                <h6>This project aims to add light to an image, provided the image's depthmap. For details, check Github README.</h6>
             </div>
             <br>
             <div class="row">
@@ -68,7 +68,7 @@
                             <span class="image-label"> Image: </span>
                         </div>
                         <div class="p-0 align-self-center">
-                            <select class="col-form-label-md" class="custom-select" id="image-select"></select>
+                            <select class="col-form-label-md custom-select" id="image-select"></select>
                         </div>
                         <div class="p-0 align-self-center">
                             <input class="btn btn-outline-primary col-form-label-md" type="button" value="Reload" id="reload-button">
@@ -92,7 +92,7 @@
                         <input class="form-control-range" type="range" id="ylightSlider" min="-100" max="100">
                     </div>
                     <div class="row">
-                        <label class="col-form-label-md" for="zlightSlider" >z :</label>
+                        <label class="col-form-label-md" for="zlightSlider">z :</label>
                         <input class="form-control-range" type="range" id="zlightSlider" min="-100" max="100">
                     </div>
                     <hr>
@@ -100,6 +100,18 @@
                         <label class="form-control-md" for="lightIntensitySlider">Light Intensity: &nbsp;&nbsp;</label>
                         <span class="form-control-md" id="light-intensity-span"></span>
                         <input class="form-control-range" type="range" id="lightIntensitySlider" min="0" max="200">
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="ambientIntensitySlider">Ambient Intensity: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="ambient-intensity-span"></span>
+                        <input class="form-control-range" type="range" id="ambientIntensitySlider" min="0" max="100">
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="lightMapIntensitySlider">Light Map Intensity: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="lightmap-intensity-span"></span>
+                        <input class="form-control-range" type="range" id="lightMapIntensitySlider" min="0" max="100">
                     </div>
                     <hr>
                     <div class="row">
