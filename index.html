@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h"
-            crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
 
         <script src="js/twgl-full.min.js"></script>
         <script src="js/vs.js"></script>
@@ -32,7 +29,6 @@
                 </form>
             </div>
         </nav>
-
 
         <div class="container">
             <br>
@@ -76,7 +72,7 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <h6 class=""><u>Light Controls</u></h6>
+                        <h6 class=""><u>Light 1 Controls</u></h6>
                     </div>
                     <div class="row">
                         <span class="col">Light Position:</span>
@@ -103,6 +99,81 @@
                     </div>
                     <hr>
                     <div class="form-group row">
+                        <label class="form-control-md" for="lightColorPicker">Light Color: &nbsp;&nbsp;</label>
+                        <input type="color" id="lightColorPicker" value="#ffffff">
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <h6 class=""><u>Light 1 Falloff</u></h6>
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="constantFalloffSlider">Constant: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="constant-falloff-span">1.00</span>
+                        <input class="form-control-range" type="range" id="constantFalloffSlider" min="0" max="200" value="100">
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="linearFalloffSlider">Linear: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="linear-falloff-span">0.09</span>
+                        <input class="form-control-range" type="range" id="linearFalloffSlider" min="0" max="100" value="9">
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="quadraticFalloffSlider">Quadratic: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="quadratic-falloff-span">0.03</span>
+                        <input class="form-control-range" type="range" id="quadraticFalloffSlider" min="0" max="100" value="3">
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <h6 class=""><u>Light 2 Controls</u></h6>
+                    </div>
+                    <div class="row">
+                        <span class="col">Light 2 Position:</span>
+                        <span class="col" id="light-pos-span2"></span>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <label class="col-form-label-md" for="xlightSlider2">x :</label>
+                        <input class="form-control-range" type="range" id="xlightSlider2" min="-100" max="100">
+                    </div>
+                    <div class="row">
+                        <label class="col-form-label-md" for="ylightSlider2">y :</label>
+                        <input class="form-control-range" type="range" id="ylightSlider2" min="-100" max="100">
+                    </div>
+                    <div class="row">
+                        <label class="col-form-label-md" for="zlightSlider2">z :</label>
+                        <input class="form-control-range" type="range" id="zlightSlider2" min="-100" max="100">
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="lightIntensitySlider2">Light 2 Intensity: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="light-intensity-span2"></span>
+                        <input class="form-control-range" type="range" id="lightIntensitySlider2" min="0" max="200">
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="lightColorPicker2">Light 2 Color: &nbsp;&nbsp;</label>
+                        <input type="color" id="lightColorPicker2" value="#ffffff">
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <h6 class=""><u>Light 2 Falloff</u></h6>
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="constantFalloffSlider2">Constant: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="constant-falloff-span2">1.00</span>
+                        <input class="form-control-range" type="range" id="constantFalloffSlider2" min="0" max="200" value="100">
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="linearFalloffSlider2">Linear: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="linear-falloff-span2">0.09</span>
+                        <input class="form-control-range" type="range" id="linearFalloffSlider2" min="0" max="100" value="9">
+                    </div>
+                    <div class="form-group row">
+                        <label class="form-control-md" for="quadraticFalloffSlider2">Quadratic: &nbsp;&nbsp;</label>
+                        <span class="form-control-md" id="quadratic-falloff-span2">0.03</span>
+                        <input class="form-control-range" type="range" id="quadraticFalloffSlider2" min="0" max="100" value="3">
+                    </div>
+                    <hr>
+                    <div class="form-group row">
                         <label class="form-control-md" for="ambientIntensitySlider">Ambient Intensity: &nbsp;&nbsp;</label>
                         <span class="form-control-md" id="ambient-intensity-span"></span>
                         <input class="form-control-range" type="range" id="ambientIntensitySlider" min="0" max="100">
@@ -117,8 +188,12 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-check">
-                                <input class="form-control-md" type="checkbox" id="lighting-checkbox" checked>
-                                <label class="form-check-label col-form-label-md" for="lighting-checkbox">Light</label>
+                                <input class="form-control-md" type="checkbox" id="light1-checkbox" checked>
+                                <label class="form-check-label col-form-label-md" for="light1-checkbox">Light 1 Enabled</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-control-md" type="checkbox" id="light2-checkbox" checked>
+                                <label class="form-check-label col-form-label-md" for="light2-checkbox">Light 2 Enabled</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-control-md" type="checkbox" id="texture-checkbox" checked>
